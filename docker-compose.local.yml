@@ -30,55 +30,8 @@ services:
     networks:
       - backend
 
-  backend:
-    build: .
-    container_name: fastapi_app
-    restart: unless-stopped
-    depends_on:
-      - postgres
-      - redis
-      - rabbitmq
-    env_file:
-      - .env
-    ports:
-      - "8000:8000"
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - .:/app
-    networks:
-      - backend
-
-#  worker_1:
-#    build: .
-#    container_name: worker_1
-#    restart: unless-stopped
-#    depends_on:
-#      - rabbitmq
-#      - redis
-#      - postgres
-#    env_file:
-#      - .env
-#    command: python workers/worker.py
-#    networks:
-#      - backend
-#
-#  worker_2:
-#    build: .
-#    container_name: worker_2
-#    restart: unless-stopped
-#    depends_on:
-#      - rabbitmq
-#      - redis
-#      - postgres
-#    env_file:
-#      - .env
-#    command: python workers/worker.py
-#    networks:
-#      - backend
-
 volumes:
   postgres_data:
-  redis_data:
   rabbitmq_data:
 
 networks:
