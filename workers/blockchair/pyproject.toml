@@ -1,0 +1,165 @@
+[tool.poetry]
+name = "worker-blockchair"
+version = "0.1.0"
+description = "Test app for k1core"
+authors = ["kostya12362 <rota199804@gmail.com>"]
+packages = [{include = "*", from="src"}]
+
+
+[tool.poetry.dependencies]
+loguru = "^0.7.2"
+python = "^3.12"
+httpx = "^0.27.2"
+aio-pika = "^9.5.4"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "~=23.1"
+isort = "~=5.12"
+ruff = "^0.6.8"
+mypy = "^1.11.2"
+gevent = "^24.11.1"
+
+
+[tool.ruff.lint]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+select = ["E", "F"]
+ignore = []
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+unfixable = []
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+line-length = 79
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "__pycache_",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "venv",
+    "Makefile",
+    "migrations",
+]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 79
+skip = '.venv,venv,env,anomaly_detector'
+src_paths = ["src"]
+
+[tool.black]
+target-version = ['py311']
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | migrations
+  )/
+                     # the root of the project
+)
+'''
+# Same as Black.
+line-length = 79
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.mypy]
+plugins = []
+python_version = '3.12'
+
+# Добавляем директорию 'src' в путь поиска модулей
+mypy_path = ['src']
+
+# Указываем директории для проверки
+files = [
+    'src',
+    'tests',
+]
+
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+explicit_package_bases = true
+
+# Исключаем определенные директории
+exclude = [
+    "migrations",
+    "simulator",
+    "anomaly_detector",
+    "estimator",
+]
+
+# Подавляем ошибки импорта типов
+follow_imports = 'silent'
+
+[[tool.mypy.overrides]]
+module = [
+    "websockets.exceptions",
+]
+ignore_missing_imports = true
+
+
+
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "src",
+]
+addopts = '-s -v --cache-clear --log-disable=httpx --log-disable=asyncio --log-disable=requests --log-disable=urllib3'
+python_functions = 'test_* *_test'
+asyncio_mode = "auto"
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+
+[tool.coverage.run]
+concurrency = ["gevent"]
+
+omit = [
+    "*/conftest.py",
+    "*/test_*.py",
+    "*/migrations/",
+    "*/src/core/*",
+]
+
+[tool.coverage.html]
+directory = "./coverage_html_report"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
