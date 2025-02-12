@@ -50,10 +50,11 @@ Create a `.env` file in the `backend` directory (near `Makefile`) with the follo
 Generate a secret key for `AUTHENTICATION__ACCESS_TOKEN__SECRET_KEY` using the following command:
 ```bash
 python3 -c "import secrets; print(f'AUTHENTICATION__ACCESS_TOKEN__SECRET_KEY={secrets.token_hex(32)}')"
+python3 -c "import secrets; print(f'SECRET_KEY={secrets.token_hex(32)}')"
 ```
 ```env
 DEBUG=False
-STATE=prod
+STATE=local
 SECRET_KEY=<DJANGO_SECRET_EKY>
 DATABASE__URI=postgres://admin:admin@localhost:5432/k1core
 BROKER__URI=amqp://admin:admin@localhost/
@@ -61,7 +62,7 @@ AUTHENTICATION__ACCESS_TOKEN__SECRET_KEY=<AUTHENTICATION__ACCESS_TOKEN__SECRET_K
 ```
 
 ### 3. Create Workers Configuration
-Create a `.env` file for each worker (Blockchair and CoinMarketCap) near their respective `Makefile`:
+Create a `.env` file for each worker (Blockchair `/workers/blockchair/.env` and CoinMarketCap `/workers/coinmarketcap/.env`) near their respective `Makefile`: 
 
 ```env
 BROKER_URI=amqp://admin:admin@localhost:5672
@@ -111,7 +112,7 @@ RABBITMQ_DEFAULT_USER=<your_rabbitmq_user>
 RABBITMQ_DEFAULT_PASS=<your_rabbitmq_password>
 
 BACKEND__DEBUG=False
-BACKEND__STATE=prod
+BACKEND__STATE=dev
 BACKEND__TCP_PORT=8200
 BACKEND__SECRET_KEY=<your_backend_secret_key>
 BACKEND__AUTHENTICATION_ACCESS_TOKEN_SECRET_KEY=<your_authentication_secret_key>
@@ -133,7 +134,21 @@ docker compose -f docker-compose.dev.yml up -d --build
   ```bash
   docker compose -f docker-compose.local.yml down
   ```
+- **Create admin in `backend` app**:
+  ```bash
+  docker compose -f docker-compose.dev.yml exec backend make create-admin
+  ```
 - **Check logs for multiple services (backend, rabbitmq, postgres)**:
   ```bash
   docker compose -f docker-compose.local.yml logs -f backend rabbitmq postgres
   ```
+
+
+## Endpoints Documentation
+
+### Swagger UI
+http://localhost:8200/docs
+
+### Admin panel
+http://localhost:8200/admin
+

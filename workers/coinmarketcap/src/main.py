@@ -14,7 +14,7 @@ from core.abc import AbstractBlockFetcher, AbstractQueuePublisher, BaseWorker
 BROKER_URI = os.environ["BROKER_URI"]  # "amqp://admin:admin@localhost/"
 QUEUE_NAME = "blockchains:save_block"
 TIMEOUT = int(os.getenv("TIMEOUT", 60))  # 5
-PROXY = os.getenv("PROXY")
+PROXY = os.getenv("PROXY") or None
 
 
 # ===== Specific implementations =====
